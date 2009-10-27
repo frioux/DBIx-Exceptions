@@ -12,6 +12,14 @@ use Exception::Class (
       isa => 'DBIx::Exception',
       fields => [ 'near' ],
    },
+   'DBIx::Exception::NoSuchTable' => {
+      isa => 'DBIx::Exception',
+      fields => [ 'table' ],
+   },
+   'DBIx::Exception::NoSuchColumn' => {
+      isa => 'DBIx::Exception',
+      fields => [ qw{column table} ],
+   },
 );
 
 1;

@@ -38,6 +38,33 @@ subtest 'non-unique' => sub {
    };
 };
 
+subtest 'invalid table' => sub {
+   plan tests => 3;
+   try {
+      my $sth = $dbh->prepare('INSERT INTO amigo (name) VALUES (?)');
+      $sth->execute('frew');
+   } catch {
+      isa_ok $_, 'DBIx::Exception::NoSuchTable';
+      is $_->original, 'DBD::SQLite::db prepare failed: no such table: amigo',
+         '... and original exception message got set correctly';
+      is $_->table, 'amigo', '... and table name got set correctly';
+   };
+};
+
+subtest 'invalid column' => sub {
+   plan tests => 4;
+   try {
+      my $sth = $dbh->prepare('INSERT INTO amigos (names) VALUES (?)');
+      $sth->execute('frew');
+   } catch {
+      isa_ok $_, 'DBIx::Exception::NoSuchColumn';
+      is $_->original, 'DBD::SQLite::db prepare failed: table amigos has no column named names',
+         '... and original exception message got set correctly';
+      is $_->column, 'names', '... and column name got set correctly';
+      is $_->table, 'amigos', '... and table name got set correctly';
+   };
+};
+
 subtest 'syntax' => sub {
    plan tests => 15;
    try {
