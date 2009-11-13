@@ -13,7 +13,8 @@ use DBIx::ParseException::SQLite;
 my $dbh = DBI->connect('dbi:SQLite:dbname=dbfile');
 my $json;
 {
-   open( my $fh, '<', 'orig.json' ) or die "could not open orig.json: $!";
+   open( my $fh, '<', "$FindBin::Bin/orig.json" )
+      or die "could not open orig.json: $!";
    my @json = <$fh>;
    $json = join '',@json;
 }

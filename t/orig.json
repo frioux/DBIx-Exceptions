@@ -1,32 +1,32 @@
 {
     "create_table": "CREATE TABLE amigos ( name VARCHAR(25), email VARCHAR(25), UNIQUE(email), UNIQUE(name));",
     "non_unique": {
-       "stmt":"INSERT INTO amigos (name) VALUES (?)",
+       "stmt": "INSERT INTO amigos (name) VALUES (?)",
        "vals": [ "frew" ]
     },
     "invalid_table": {
-       "stmt":"INSERT INTO amigo (name) VALUES (?)",
+       "stmt": "INSERT INTO amigo (name) VALUES (?)",
        "vals": [ "frew" ]
     },
     "invalid_column": {
-       "stmt":"INSERT INTO amigos (names) VALUES (?)",
+       "stmt": "INSERT INTO amigos (names) VALUES (?)",
        "vals": [ "frew" ]
     },
     "syntax": [
         {
-           "stmt":"INERT INTO amigos (name) VALUES (?)",
+           "stmt": "INERT INTO amigos (name) VALUES (?)",
            "vals": [ "frew" ]
         }, {
-           "stmt":"INSERT INO amigos (name) VALUES (?)",
+           "stmt": "INSERT INO amigos (name) VALUES (?)",
            "vals": [ "frew" ]
         }, {
-           "stmt":"INSERT INTO amigos (name) VALUS (?)",
+           "stmt": "INSERT INTO amigos (name) VALUS (?)",
            "vals": [ "frew" ]
         }, {
-           "stmt":"INSERT INTO amigos (name) VALUES ((?)",
+           "stmt": "INSERT INTO amigos (name) VALUES ((?)",
            "vals": [ "frew" ]
         }, {
-           "stmt":"INSERT INTO amigos (name) VALUES (,?)",
+           "stmt": "INSERT INTO amigos (name) VALUES (,?)",
            "vals": [ "frew" ]
         }
     ]
