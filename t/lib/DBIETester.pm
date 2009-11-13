@@ -4,20 +4,57 @@ use Moose;
 
 use Test::More;
 use Try::Tiny;
+use JSON;
+use FindBin;
+use DBI;
+use DBIx::ParseException;
 
 use Test::Exception;
 
-has test_data => (
-   isa      => 'HashRef',
+has driver => (
+   isa      => 'Str',
    is       => 'ro',
    required => 1,
+);
+
+has dsn => (
+   isa      => 'Str',
+   is       => 'ro',
+   required => 1,
+);
+
+has test_data => (
+   isa        => 'HashRef',
+   is         => 'ro',
+   lazy_build => 1,
 );
 
 has dbh => (
    isa      => 'DBI::db',
    is       => 'ro',
-   required => 1,
+   lazy_build => 1,
 );
+
+sub _build_test_data {
+   my $self = shift;
+   my $json;
+   {
+      my $filename = "$FindBin::Bin/".$self->driver.".json";
+      open( my $fh, '<', $filename)
+         or die "could not open $filename: $!";
+      my @json = <$fh>;
+      $json = join '',@json;
+   }
+   return from_json($json);
+}
+
+sub _build_dbh {
+   my $self = shift;
+   my $dbh = DBI->connect($self->dsn);
+
+   $dbh->{HandleError} = DBIx::ParseException->handler({ dbh => $dbh });
+   return $dbh;
+}
 
 sub create_table {
    my $self = shift;
