@@ -8,7 +8,7 @@ use lib "$FindBin::Bin/../lib", "$FindBin::Bin/lib";
 use JSON;
 use DBI;
 use DBIETester;
-use DBIx::ParseException::SQLite;
+use DBIx::ParseException;
 
 my $dbh = DBI->connect('dbi:SQLite:dbname=dbfile');
 my $json;
@@ -19,7 +19,7 @@ my $json;
    $json = join '',@json;
 }
 
-$dbh->{HandleError} = \&DBIx::ParseException::SQLite::error_handler;
+$dbh->{HandleError} = DBIx::ParseException->handler({ dbh => $dbh });
 
 DBIETester->new(
    dbh => $dbh,

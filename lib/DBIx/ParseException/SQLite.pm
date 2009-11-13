@@ -1,13 +1,11 @@
 package DBIx::ParseException::SQLite;
 
-use Moose;
 use DBIx::Exceptions;
-with 'DBIx::ParseException';
 
 sub error_handler {
    my $string = shift;
-   my @args = ( original => $string );
-   my $class = 'DBIx::Exception';
+   my @args   = ( original => $string );
+   my $class  = 'DBIx::Exception';
 
    if ($string =~ /^DBD::SQLite::st \s+ execute \s+ failed: \s+ column \s+ (.*)
                     \s+ is \s+ not \s+ unique/ixm) {
@@ -26,6 +24,7 @@ sub error_handler {
       $class .= '::NoSuchColumn';
       push @args, ( table => $1, column => $2 );
    }
+
    $class->throw(@args);
 }
 
