@@ -3,7 +3,7 @@
     "non_unique": {
        "stmt": "INSERT INTO amigos (name) VALUES (?)",
        "vals": [ "frew" ],
-       "err": "DBD::SQLite::st execute failed: column name is not unique"
+       "err": "DBD::SQLite::st execute failed: (constraint failed\n)?column name is not unique"
     },
     "invalid_table": {
        "stmt": "INSERT INTO amigo (name) VALUES (?)",

@@ -71,7 +71,7 @@ sub non_unique {
          $sth->execute(@{$data->{vals}}) for (1..2);
       } catch {
          isa_ok $_, 'DBIx::Exception::NotUnique';
-         is $_->original, $data->{err}, '... and original message got set correctly';
+         like $_->original, qr/${\$data->{err}}/, '... and original message got set correctly';
          is $_->column, 'name', '... and column name got set correctly';
       };
    };

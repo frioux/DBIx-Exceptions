@@ -7,10 +7,10 @@ sub error_handler {
    my @args   = ( original => $string );
    my $class  = 'DBIx::Exception';
 
-   if ($string =~ /^DBD::SQLite::st \s+ execute \s+ failed: \s+ column \s+ (.*)
-                    \s+ is \s+ not \s+ unique/ixm) {
+   if (my ($column) = $string =~ /^DBD::SQLite::st \s+ execute \s+ failed: \s+ (?:constraint \s+ failed \s+)?
+                                   column \s+ (.*) \s+ is \s+ not \s+ unique/ixm) {
       $class .= '::NotUnique';
-      push @args, ( column => $1 );
+      push @args, ( column => $column );
    } elsif ($string =~ /^DBD::SQLite::db \s+ prepare \s+ failed: \s+ near \s+
                         "(.*)": \s+ syntax \s+ error/ixm) {
       $class .= '::Syntax';
