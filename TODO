@@ -1,0 +1,5 @@
+Don't dep on moose; way overkill for this
+Make exactly the following work:
+  - FK Constraint checking
+  - Unique checking
+Make dev release and doc
