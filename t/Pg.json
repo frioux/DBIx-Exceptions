@@ -1,0 +1,41 @@
+{
+    "create_table": "CREATE TABLE amigos ( name VARCHAR(25), email VARCHAR(25), UNIQUE(email), UNIQUE(name));",
+    "non_unique": {
+       "stmt": "INSERT INTO amigos (name) VALUES (?)",
+       "vals": [ "frew" ],
+       "err": "DBD::SQLite::st execute failed: (constraint failed\n)?column name is not unique"
+    },
+    "invalid_table": {
+       "stmt": "INSERT INTO amigo (name) VALUES (?)",
+       "vals": [ "frew" ],
+       "err": "DBD::SQLite::db prepare failed: no such table: amigo"
+    },
+    "invalid_column": {
+       "stmt": "INSERT INTO amigos (names) VALUES (?)",
+       "vals": [ "frew" ],
+       "err": "DBD::SQLite::db prepare failed: table amigos has no column named names"
+    },
+    "syntax": [
+        {
+           "stmt": "INERT INTO amigos (name) VALUES (?)",
+           "vals": [ "frew" ],
+           "err": "DBD::SQLite::db prepare failed: near \"INERT\": syntax error"
+        }, {
+           "stmt": "INSERT INO amigos (name) VALUES (?)",
+           "vals": [ "frew" ],
+           "err": "DBD::SQLite::db prepare failed: near \"INO\": syntax error"
+        }, {
+           "stmt": "INSERT INTO amigos (name) VALUS (?)",
+           "vals": [ "frew" ],
+           "err": "DBD::SQLite::db prepare failed: near \"VALUS\": syntax error"
+        }, {
+           "stmt": "INSERT INTO amigos (name) VALUES ((?)",
+           "vals": [ "frew" ],
+           "err": "DBD::SQLite::db prepare failed: near \")\": syntax error"
+        }, {
+           "stmt": "INSERT INTO amigos (name) VALUES (,?)",
+           "vals": [ "frew" ],
+           "err": "DBD::SQLite::db prepare failed: near \",\": syntax error"
+        }
+    ]
+}

@@ -23,6 +23,18 @@ has dsn => (
    required => 1,
 );
 
+has username => (
+   isa      => 'Str',
+   is       => 'ro',
+   required => 0,
+);
+
+has password => (
+   isa      => 'Str',
+   is       => 'ro',
+   required => 0,
+);
+
 has test_data => (
    isa        => 'HashRef',
    is         => 'ro',
@@ -50,7 +62,7 @@ sub _build_test_data {
 
 sub _build_dbh {
    my $self = shift;
-   my $dbh = DBI->connect($self->dsn);
+   my $dbh = DBI->connect($self->dsn, $self->username, $self->password);
 
    $dbh->{HandleError} = DBIx::ParseException->handler({ dbh => $dbh });
    return $dbh;
