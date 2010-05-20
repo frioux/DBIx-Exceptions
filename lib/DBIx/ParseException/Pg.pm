@@ -366,6 +366,8 @@ sub error_handler {
       },
       '40P01' => {
          id => 'deadlock_detected',
+         class => 'Deadlock',
+         group => 'deadlock'
       },
 
       # syntax errors

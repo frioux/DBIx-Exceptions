@@ -30,6 +30,11 @@ use Exception::Class (
       isa => 'DBIx::Exception::ConstraintViolation',
    },
 
+   'DBIx::Exception::Deadlock' => {
+      isa => 'DBIx::Exception',
+      fields => [],
+   },
+
    'DBIx::Exception::Syntax' => {
       isa => 'DBIx::Exception',
       fields => [ 'near' ],

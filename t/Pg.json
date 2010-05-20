@@ -76,5 +76,14 @@
           "err": "7",
           "errstr": "DBD::Pg::st execute failed: ERROR:  canceling statement due to statement timeout [for Statement \"SELECT * FROM pg_class\"]"
        }
+    },
+    "deadlock": {
+       "err": "ERROR:  deadlock detected",
+       "class": "DBIx::Exception::Deadlock",
+       "mock_dbh": {
+          "state": "40P01",
+          "err": "7",
+          "errstr": "DBD::Pg::st execute failed: ERROR:  deadlock detected\nDETAIL:  Process 23541 waits for ShareLock on transaction 3321046029; blocked by process 23544."
+       }
     }
 }
