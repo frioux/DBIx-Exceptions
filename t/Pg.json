@@ -1,5 +1,5 @@
 {
-    "create_table": "DROP TABLE IF EXISTS amigos; CREATE TABLE amigos ( name VARCHAR(25), email VARCHAR(25), UNIQUE(email), UNIQUE(name));",
+    "create_table": "DROP TABLE IF EXISTS amigos; CREATE TABLE amigos ( name VARCHAR(25) NOT NULL, email VARCHAR(25), UNIQUE(email), UNIQUE(name));",
     "non_unique": {
        "stmt": "INSERT INTO amigos (name) VALUES (?)",
        "vals": [ "frew" ],
@@ -8,26 +8,51 @@
     "invalid_table": {
        "stmt": "INSERT INTO amigo (name) VALUES (?)",
        "vals": [ "frew" ],
-       "err": "DBD::Pg::st execute failed: ERROR:  relation \"amigo\" does not exist"
+       "err": "DBD::Pg::st execute failed: ERROR:  relation \"amigo\" does not exist",
+       "tokens": {
+          "table": "amigos"
+       }
     },
     "invalid_column": {
        "stmt": "INSERT INTO amigos (names) VALUES (?)",
        "vals": [ "frew" ],
-       "err": "DBD::Pg::st execute failed: ERROR:  column \"names\" of relation \"amigos\" does not exist"
+       "err": "DBD::Pg::st execute failed: ERROR:  column \"names\" of relation \"amigos\" does not exist",
+       "tokens": {
+          "column": "names",
+          "table": "amigos"
+       }
+    },
+    "null_column": {
+       "stmt": "INSERT INTO amigos (name) VALUES (?)",
+       "vals": [ null ],
+       "err": "DBD::Pg::st execute failed: ERROR:  null value in column \"name\" violates not-null constraint",
+       "tokens": {
+          "column": "name"
+       },
+       "class": "DBIx::Exception::NotNull"
     },
     "syntax": [
         {
            "stmt": "INERT INTO amigos (name) VALUES (?)",
            "vals": [ "frew" ],
-           "err": "DBD::Pg::st execute failed: ERROR:  syntax error at or near \"INERT\""
+           "err": "DBD::Pg::st execute failed: ERROR:  syntax error at or near \"INERT\"",
+           "tokens": {
+              "near": "INERT"
+           }
         }, {
            "stmt": "INSERT INO amigos (name) VALUES (?)",
            "vals": [ "frew" ],
-           "err": "syntax error at or near \"INO\""
+           "err": "syntax error at or near \"INO\"",
+           "tokens": {
+              "near": "INO"
+           }
         }, {
            "stmt": "INSERT INTO amigos (name) VALUS (?)",
            "vals": [ "frew" ],
-           "err": "syntax error at or near \"VALUS\""
+           "err": "syntax error at or near \"VALUS\"",
+           "tokens": {
+              "near": "VALUS"
+           }
         }, {
            "stmt": "INSERT INTO amigos (name) VALUES ((?)",
            "vals": [ "frew" ],
@@ -35,7 +60,10 @@
         }, {
            "stmt": "INSERT INTO amigos (name) VALUES (,?)",
            "vals": [ "frew" ],
-           "err": "syntax error at or near \",\""
+           "err": "syntax error at or near \",\"",
+           "tokens": {
+              "near": ","
+           }
         }
     ]
 }

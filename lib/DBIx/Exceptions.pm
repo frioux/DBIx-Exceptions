@@ -11,6 +11,9 @@ use Exception::Class (
    'DBIx::Exception::NotUnique' => {
       isa => 'DBIx::Exception::ConstraintViolation',
    },
+   'DBIx::Exception::NotNull' => {
+      isa => 'DBIx::Exception::ConstraintViolation',
+   },
    'DBIx::Exception::ForeignKey' => {
       isa => 'DBIx::Exception::ConstraintViolation',
    },
