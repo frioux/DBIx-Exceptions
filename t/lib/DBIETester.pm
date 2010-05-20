@@ -212,6 +212,14 @@ sub run_tests {
    my $self = shift;
 
    $self->create_table;
+
+   # there are three levels of testing
+   # 1) the test has a custom method in this class
+   # 2) no custom method, but there is a stmt in the test_data
+   #    which can be run against the live db using ->test_generic
+   # 3) no custom method or stmt, but there is a sample error message
+   #    in the test_data which can be thrown at the parser to check
+   #    that the correct class and tokens are set (better than nothing basically)
    foreach my $test_name (keys %{$self->test_data}) {
       if (my $sub = $self->can($test_name)) {
          $sub->($self);
