@@ -2,6 +2,8 @@ package DBIx::ParseException::SQLite;
 
 use DBIx::Exceptions;
 
+sub capabilities { $_[0] }
+
 sub error_handler {
    my $string = shift;
    my @args   = ( original => $string );
@@ -28,4 +30,20 @@ sub error_handler {
    $class->throw(@args);
 }
 
+use constant {
+  can_unique_constraint        => 1,
+  can_unique_constraint_column => 1,
+
+  can_syntax                   => 1,
+  can_syntax_near              => 1,
+
+  can_no_such_table            => 1,
+  can_no_such_table_table      => 1,
+
+  can_no_such_column           => 1,
+  can_no_such_column_table     => 1,
+  can_no_such_column_column    => 1,
+};
+
 1;
+# vim: ts=2 tw=2 expandtab
