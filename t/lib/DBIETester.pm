@@ -41,6 +41,15 @@ has test_data => (
    lazy_build => 1,
 );
 
+has capabilities => (
+   is       => 'ro',
+   lazy_build => 1,
+);
+
+sub _build_capabilities{
+   DBIx::ParseException->capabilities({ dbh => $_[0]->dbh })
+}
+
 has dbh => (
    isa      => 'DBI::db',
    is       => 'ro',
