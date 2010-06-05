@@ -85,17 +85,21 @@ sub create_table {
 
 sub non_unique {
    my $self = shift;
+   my $cap = $self->capabilities;
    my $data = $self->test_data->{non_unique};
+   return unless $cap->can_unique_constraint;
    subtest 'non-unique' => sub {
-      plan tests => 2;
+      my $e;
       try {
          my $sth = $self->dbh->prepare($data->{stmt});
          $sth->execute(@{$data->{vals}}) for (1..2);
-      } catch {
-         isa_ok $_, 'DBIx::Exception::NotUnique';
-         like $_->original, qr/${\$data->{err}}/, '... and original message got set correctly';
-# XXX Pg doesn't have this        is $_->column, 'name', '... and column name got set correctly'; 
-      };
+      } catch { $e = $_ };
+      isa_ok $e, 'DBIx::Exception::NotUnique';
+      like $e->original, qr/${\$data->{err}}/,
+         '... and original message got set correctly';
+      is $e->column, 'name', '... and column name got set correctly'
+         if $cap->can_unique_constraint_column;
+      done_testing;
    };
 }
 
