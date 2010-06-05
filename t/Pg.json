@@ -1,41 +1,41 @@
 {
-    "create_table": "CREATE TABLE amigos ( name VARCHAR(25), email VARCHAR(25), UNIQUE(email), UNIQUE(name));",
+    "create_table": "DROP TABLE IF EXISTS amigos; CREATE TABLE amigos ( name VARCHAR(25), email VARCHAR(25), UNIQUE(email), UNIQUE(name));",
     "non_unique": {
        "stmt": "INSERT INTO amigos (name) VALUES (?)",
        "vals": [ "frew" ],
-       "err": "DBD::SQLite::st execute failed: (constraint failed\n)?column name is not unique"
+       "err": "DBD::Pg::st execute failed: ERROR:  duplicate key value violates unique constraint \"amigos_name_key\""
     },
     "invalid_table": {
        "stmt": "INSERT INTO amigo (name) VALUES (?)",
        "vals": [ "frew" ],
-       "err": "DBD::SQLite::db prepare failed: no such table: amigo"
+       "err": "DBD::Pg::st execute failed: ERROR:  relation \"amigo\" does not exist"
     },
     "invalid_column": {
        "stmt": "INSERT INTO amigos (names) VALUES (?)",
        "vals": [ "frew" ],
-       "err": "DBD::SQLite::db prepare failed: table amigos has no column named names"
+       "err": "DBD::Pg::st execute failed: ERROR:  column \"names\" of relation \"amigos\" does not exist"
     },
     "syntax": [
         {
            "stmt": "INERT INTO amigos (name) VALUES (?)",
            "vals": [ "frew" ],
-           "err": "DBD::SQLite::db prepare failed: near \"INERT\": syntax error"
+           "err": "DBD::Pg::st execute failed: ERROR:  syntax error at or near \"INERT\""
         }, {
            "stmt": "INSERT INO amigos (name) VALUES (?)",
            "vals": [ "frew" ],
-           "err": "DBD::SQLite::db prepare failed: near \"INO\": syntax error"
+           "err": "syntax error at or near \"INO\""
         }, {
            "stmt": "INSERT INTO amigos (name) VALUS (?)",
            "vals": [ "frew" ],
-           "err": "DBD::SQLite::db prepare failed: near \"VALUS\": syntax error"
+           "err": "syntax error at or near \"VALUS\""
         }, {
            "stmt": "INSERT INTO amigos (name) VALUES ((?)",
            "vals": [ "frew" ],
-           "err": "DBD::SQLite::db prepare failed: near \")\": syntax error"
+           "err": "syntax error at end of input"
         }, {
            "stmt": "INSERT INTO amigos (name) VALUES (,?)",
            "vals": [ "frew" ],
-           "err": "DBD::SQLite::db prepare failed: near \",\": syntax error"
+           "err": "syntax error at or near \",\""
         }
     ]
 }

@@ -31,7 +31,7 @@
         }, {
            "stmt": "INSERT INTO amigos (name) VALUES ((?)",
            "vals": [ "frew" ],
-           "err": "DBD::SQLite::db prepare failed: near \")\": syntax error"
+           "err": "DBD::SQLite::db prepare failed: near \".\": syntax error"
         }, {
            "stmt": "INSERT INTO amigos (name) VALUES (,?)",
            "vals": [ "frew" ],

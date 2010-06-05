@@ -4,9 +4,15 @@ use Exception::Class (
    'DBIx::Exception' => {
       fields => [ 'original' ],
    },
-   'DBIx::Exception::NotUnique' => {
+   'DBIx::Exception::ConstraintViolation' => {
       isa => 'DBIx::Exception',
-      fields => [ 'column' ],
+      fields => [ 'column', 'constraint' ],
+   },
+   'DBIx::Exception::NotUnique' => {
+      isa => 'DBIx::Exception::ConstraintViolation',
+   },
+   'DBIx::Exception::ForeignKey' => {
+      isa => 'DBIx::Exception::ConstraintViolation',
    },
    'DBIx::Exception::Syntax' => {
       isa => 'DBIx::Exception',
