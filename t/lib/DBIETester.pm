@@ -124,18 +124,22 @@ sub invalid_table {
 
 sub invalid_column {
    my $self = shift;
+   my $cap = $self->capabilities;
    my $data = $self->test_data->{invalid_column};
+   return unless $cap->can_no_such_column;
+   my $e;
    subtest 'invalid column' => sub {
-      plan tests => 4;
       try {
          my $sth = $self->dbh->prepare($data->{stmt});
          $sth->execute(@{$data->{vals}});
-      } catch {
-         isa_ok $_, 'DBIx::Exception::NoSuchColumn';
-         like $_->original, qr/${\$data->{err}}/, '... and original message got set correctly';
-         is $_->column, 'names', '... and column name got set correctly';
-         is $_->table, 'amigos', '... and table name got set correctly';
-      };
+      } catch { $e = $_ };
+      isa_ok $e, 'DBIx::Exception::NoSuchColumn';
+      like $e->original, qr/${\$data->{err}}/, '... and original message got set correctly';
+      is $e->column, 'names', '... and column name got set correctly'
+         if $cap->can_no_such_column_column;
+      is $e->table, 'amigos', '... and table name got set correctly'
+         if $cap->can_no_such_column_table;
+      done_testing;
    };
 }
 
