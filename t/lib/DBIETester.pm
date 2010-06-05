@@ -105,17 +105,20 @@ sub non_unique {
 
 sub invalid_table {
    my $self = shift;
+   my $cap = $self->capabilities;
    my $data = $self->test_data->{invalid_table};
+   return unless $cap->can_no_such_table;
+   my $e;
    subtest 'invalid table' => sub {
-      plan tests => 3;
       try {
          my $sth = $self->dbh->prepare($data->{stmt});
          $sth->execute(@{$data->{vals}});
-      } catch {
-         isa_ok $_, 'DBIx::Exception::NoSuchTable';
-         like $_->original, qr/${\$data->{err}}/, '... and original message got set correctly';
-         is $_->table, 'amigo', '... and table name got set correctly';
-      };
+      } catch { $e = $_ };
+      isa_ok $e, 'DBIx::Exception::NoSuchTable';
+      like $e->original, qr/${\$data->{err}}/, '... and original message got set correctly';
+      is $e->table, 'amigo', '... and table name got set correctly'
+         if $cap->can_no_such_table_table;
+      done_testing;
    };
 }
 
