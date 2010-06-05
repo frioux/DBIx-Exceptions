@@ -63,7 +63,18 @@
            "err": "syntax error at or near \",\"",
            "tokens": {
               "near": ","
+           },
+           "mock_dbh": {
            }
         }
-    ]
+    ],
+    "statement_timeout": {
+       "err": "canceling statement due to statement timeout",
+       "class": "DBIx::Exception::QueryCanceled",
+       "mock_dbh": {
+          "state": "57014",
+          "err": "7",
+          "errstr": "DBD::Pg::st execute failed: ERROR:  canceling statement due to statement timeout [for Statement \"SELECT * FROM pg_class\"]"
+       }
+    }
 }

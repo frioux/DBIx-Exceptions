@@ -8,7 +8,7 @@ use JSON;
 use FindBin;
 use DBI;
 use DBIx::ParseException;
-
+use DBIETester::MockErrorDBH;
 use Test::Exception;
 
 has driver => (
@@ -185,9 +185,9 @@ sub syntax {
    };
 }
 
-# generic test which just uses the stmt in the test data, runs it and checks that
-# the class and the tokens are set correctly
-sub test_generic {
+# generic test which just uses the stmt in the test data, runs it against
+# the live db and checks that the class and the tokens are set correctly
+sub test_generic_live {
    my ($self, $test_name) = @_;
    my $data = $self->test_data->{ $test_name };
    subtest $test_name => sub {
@@ -208,6 +208,35 @@ sub test_generic {
    };
 }
 
+sub test_generic_mock {
+   my ($self, $test_name) = @_;
+   my $data = $self->test_data->{ $test_name };
+   my $driver = $self->dbh->{Driver}{Name};
+   my $parser_class = 'DBIx::ParseException::' . $driver;
+   eval "require $parser_class";
+   my $mock_dbh_params = $data->{mock_dbh};
+   my $mock_dbh = DBIETester::MockErrorDBH->new($mock_dbh_params);
+
+   subtest $test_name => sub {
+      plan;
+      try {
+         # what's the right way to do this?
+         $parser_class->can('error_handler')->($mock_dbh->errstr, $mock_dbh);
+      } catch {
+         isa_ok $_, $data->{class};
+         like $_->original, qr/${\$data->{err}}/, '... and original message got set correctly';
+         if (my $tkns = $data->{tokens}) {
+            foreach my $col (keys %{$tkns}) {
+               is $_->{$col}, $tkns->{$col}, "... and $col token got set correctly";
+            }
+         }
+         done_testing();
+      }
+   }
+
+
+}
+
 sub run_tests {
    my $self = shift;
 
@@ -216,15 +245,20 @@ sub run_tests {
    # there are three levels of testing
    # 1) the test has a custom method in this class
    # 2) no custom method, but there is a stmt in the test_data
-   #    which can be run against the live db using ->test_generic
+   #    which can be run against the live db using ->test_generic_live
    # 3) no custom method or stmt, but there is a sample error message
    #    in the test_data which can be thrown at the parser to check
    #    that the correct class and tokens are set (better than nothing basically)
    foreach my $test_name (keys %{$self->test_data}) {
+      my $data = $self->test_data->{$test_name};
       if (my $sub = $self->can($test_name)) {
          $sub->($self);
       } else {
-         $self->test_generic($test_name);
+         if ($data->{stmt}) {
+            $self->test_generic_live($test_name);
+         } else {
+            $self->test_generic_mock($test_name);
+         }
       }
    }
    done_testing;

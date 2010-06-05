@@ -536,6 +536,8 @@ sub error_handler {
       },
       '57014' => {
          id => 'query_canceled',
+         group => 'timeout',
+         class => 'QueryCanceled'
       },
       '57P01' => {
          id => 'admin_shutdown',

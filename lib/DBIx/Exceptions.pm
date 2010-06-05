@@ -17,6 +17,19 @@ use Exception::Class (
    'DBIx::Exception::ForeignKey' => {
       isa => 'DBIx::Exception::ConstraintViolation',
    },
+
+   'DBIx::Exception::Timeout' => {
+      isa => 'DBIx::Exception',
+      fields => [],
+   },
+   'DBIx::Exception::QueryCanceled' => {
+      isa => 'DBIx::Exception::Timeout'
+   },
+
+   'DBIx::Exception::NotUnique' => {
+      isa => 'DBIx::Exception::ConstraintViolation',
+   },
+
    'DBIx::Exception::Syntax' => {
       isa => 'DBIx::Exception',
       fields => [ 'near' ],
