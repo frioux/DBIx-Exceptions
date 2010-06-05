@@ -146,62 +146,66 @@ sub invalid_column {
 sub syntax {
    my $self = shift;
    my $data = $self->test_data->{syntax};
+   my $cap = $self->capabilities;
 
+   return unless $cap->can_syntax;
    subtest 'syntax' => sub {
+      my $e1;
       my $test = 0;
-      plan tests => 15;
       try {
          my $sth = $self->dbh->prepare($data->[$test]{stmt});
          $sth->execute($data->[$test]{vals});
-      } catch {
-         isa_ok $_, 'DBIx::Exception::Syntax';
-         like $_->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
-         is $_->near, 'INERT', '... and near token got set correctly';
-      };
+      } catch { $e1 = $_   };
+
+      isa_ok $e1, 'DBIx::Exception::Syntax';
+      like $e1->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
+      is $e1->near, 'INERT', '... and near token got set correctly'
+         if $cap->can_syntax_near;
 
       $test++;
-
+      my $e2;
       try {
          my $sth = $self->dbh->prepare($data->[$test]{stmt});
          $sth->execute($data->[$test]{vals});
-      } catch {
-         isa_ok $_, 'DBIx::Exception::Syntax';
-         like $_->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
-         is $_->near, 'INO', '... and near token got set correctly';
-      };
+      } catch { $e2 = $_ };
+      isa_ok $e2, 'DBIx::Exception::Syntax';
+      like $e2->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
+      is $e2->near, 'INO', '... and near token got set correctly'
+         if $cap->can_syntax_near;
 
       $test++;
-
+      my $e3;
       try {
          my $sth = $self->dbh->prepare($data->[$test]{stmt});
          $sth->execute($data->[$test]{vals});
-      } catch {
-         isa_ok $_, 'DBIx::Exception::Syntax';
-         like $_->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
-         is $_->near, 'VALUS', '... and near token got set correctly';
-      };
+      } catch { $e3 = $_ };
+      isa_ok $e3, 'DBIx::Exception::Syntax';
+      like $e3->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
+      is $e3->near, 'VALUS', '... and near token got set correctly'
+         if $cap->can_syntax_near;
 
       $test++;
-
+      my $e4;
       try {
          my $sth = $self->dbh->prepare($data->[$test]{stmt});
          $sth->execute($data->[$test]{vals});
-      } catch {
-         isa_ok $_, 'DBIx::Exception::Syntax';
-         like $_->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
-         is $_->near, ')', '... and near token got set correctly';
-      };
+      } catch { $e4 = $_ };
+      isa_ok $e4, 'DBIx::Exception::Syntax';
+      like $e4->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
+      is $e4->near, ')', '... and near token got set correctly'
+         if $cap->can_syntax_near;
 
       $test++;
-
+      my $e5;
       try {
          my $sth = $self->dbh->prepare($data->[$test]{stmt});
          $sth->execute($data->[$test]{vals});
-      } catch {
-         isa_ok $_, 'DBIx::Exception::Syntax';
-         like $_->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
-         is $_->near, ',', '... and near token got set correctly';
-      };
+      } catch { $e5 = $_ };
+      isa_ok $e5, 'DBIx::Exception::Syntax';
+      like $e5->original, qr/${\$data->[$test]{err}}/, '... and original message got set correctly';
+      is $e5->near, ',', '... and near token got set correctly'
+         if $cap->can_syntax_near;
+      done_testing;
    };
 }
 
