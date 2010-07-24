@@ -862,63 +862,38 @@ sub error_handler {
    my $dbh = shift;
    my $code = $dbh->state;
 
-   #print $string . "\n";
-   if ( $string =~ m/\[state was (.*) now (.*)\]/ )
-	{
-		print "Old code $1 was changed to $2\n";
-		my $old_message = $error_codes{$1}{err_desc};
-		#the old code is what we really want
-		$code = $1;
-		print "$old_message\n";
-	}
-   
+   #the old code is what we really want
+   if ( $string =~ m/\[state was (.*) now (.*)\]/ ) {
+      $code = $1
+   }
+
    my $error_info = $error_codes{$code};
-   #print "String is $string\n";
-   print "Looking at code: $code\n";
-   #print "Looking at error info: $error_info->{err_desc}\n";
-   #print "Looking at error class: $error_info->{class}\n";
-   #print "Looking at error group: $error_info->{group}\n";
-   
+
    # prepare class
    my $class = 'DBIx::Exception';
-   my $group = "";
+   my $group = '';
    if ($string =~ m/Violation of UNIQUE KEY constraint/){
-		$class .= '::' .'NotUnique';
-		$group = 'constraint';
+      $class .= '::NotUnique';
+      $group = 'constraint';
+   } elsif (my $class_ext = $error_info->{class}) {
+     $class .= "::$class_ext";
+     $group = $error_info->{group};
    }
-   elsif (my $class_ext = $error_info->{class}) {
-		print "Class: " .  $error_info->{class} . "\n";
-      $class .= '::' . $class_ext;
-	  $group = $error_info->{group};
-   }
-
-
-   
 
    # prepare args
    my @args = ( original => $string );
-   print "Group is $group\n";
    if ($group eq 'constraint') {
       # fk constraints, unique constraints etc
       my ($constraint) = $string =~ /Violation of UNIQUE KEY constraint '.+'/;
       push @args, ( constraint => $constraint );
       my ($column_name) = $string =~ /column '(.+)', table/;
-      if ($column_name) {
-	     print "Column name: $column_name\n";
-         push @args, ( column => $column_name );
-      }
-
+      push @args, ( column => $column_name ) if $column_name;
    } elsif ($group eq 'no_such') {
       # wrong table, wrong column etc
-      my ($table_name) = $string =~ /Invalid object name '(.+)'/;
+      my ($table_name)  = $string =~ /Invalid object name '(.+)'/;
       my ($column_name) = $string =~ /Invalid column name '(.+)'\./;
-      if ($table_name) {
-		print "Table name: $table_name\n";
-		push @args, ( table => $table_name );
-      }
-	  if ($column_name) {
-         push @args, ( column => $column_name );
-      }
+      push @args, ( table  => $table_name  ) if $table_name;
+      push @args, ( column => $column_name ) if $column_name;
    } elsif ($group eq 'syntax') {
       my ($near) = $string =~ /near "(.+)"/;
       push @args, ( near => $near );
@@ -940,6 +915,6 @@ use constant {
   can_no_such_column           => 1,
   can_no_such_column_table     => 0,
   can_no_such_column_column    => 1,
-}; 
+};
 
 1;
