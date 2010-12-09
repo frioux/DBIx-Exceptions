@@ -1,5 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-       - Initial Release
+  - Get stuff from remote merged in
+  - (I'm a moron)
+
+0.001000_01 2010-12-08 18:24:11 CST6CDT
+  - Initial Release
 
