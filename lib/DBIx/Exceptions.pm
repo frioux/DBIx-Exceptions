@@ -1,5 +1,7 @@
 package DBIx::Exceptions;
 
+# ABSTRACT: Get full exception objects from DBI
+
 use Exception::Class (
    'DBIx::Exception' => {
       fields => [ 'original' ],
