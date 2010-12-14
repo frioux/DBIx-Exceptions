@@ -1,23 +1,20 @@
 package DBIETester::MockErrorDBH;
 
-use Moose;
+use Moo;
 
 has state => (
    isa      => 'Str',
    is       => 'ro',
-   required => 0,
 );
 
 has err => (
    isa      => 'Str',
    is       => 'ro',
-   required => 0,
 );
 
 has errstr => (
    isa      => 'Str',
    is       => 'ro',
-   required => 0,
 );
 
 1;

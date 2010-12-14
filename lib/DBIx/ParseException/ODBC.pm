@@ -1,6 +1,6 @@
 package DBIx::ParseException::ODBC;
 
-use Moose;
+use Moo;
 use DBIx::Exceptions;
 
 my %error_codes = (

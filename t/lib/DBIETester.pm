@@ -1,6 +1,6 @@
 package DBIETester;
 
-use Moose;
+use Moo;
 
 use Test::More;
 use Try::Tiny;
@@ -12,38 +12,31 @@ use DBIETester::MockErrorDBH;
 use Test::Exception;
 
 has driver => (
-   isa      => 'Str',
    is       => 'ro',
    required => 1,
 );
 
 has dsn => (
-   isa      => 'Str',
    is       => 'ro',
    required => 1,
 );
 
 has username => (
-   isa      => 'Str',
    is       => 'ro',
    required => 0,
 );
 
 has password => (
-   isa      => 'Str',
    is       => 'ro',
    required => 0,
 );
 
 has test_data => (
-   isa        => 'HashRef',
-   is         => 'ro',
-   lazy_build => 1,
+   is         => 'lazy',
 );
 
 has capabilities => (
-   is       => 'ro',
-   lazy_build => 1,
+   is       => 'lazy',
 );
 
 sub _build_capabilities{
@@ -51,8 +44,7 @@ sub _build_capabilities{
 }
 
 has dbh => (
-   isa      => 'DBI::db',
-   is       => 'ro',
+   is       => 'lazy',
    lazy_build => 1,
 );
 
@@ -288,7 +280,6 @@ sub run_tests {
    done_testing;
 }
 
-no Moose;
-__PACKAGE__->meta->make_immutable();
+no Moo;
 1;
 

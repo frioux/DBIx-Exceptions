@@ -1,6 +1,6 @@
 package DBIx::ParseException::Pg;
 
-use Moose;
+use Moo;
 use DBIx::Exceptions;
 
 my %error_codes = (
