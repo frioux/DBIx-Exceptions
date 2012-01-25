@@ -49,4 +49,3 @@ CAPABILITIES: {
 
 1;
 
-# vim: ts=2 tw=2 expandtab
