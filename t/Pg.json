@@ -1,86 +1,66 @@
 {
-    "create_table": "DROP TABLE IF EXISTS amigos; CREATE TABLE amigos ( name VARCHAR(25) NOT NULL, email VARCHAR(25), UNIQUE(email), UNIQUE(name));",
     "non_unique": {
-       "stmt": "INSERT INTO amigos (name) VALUES (?)",
-       "vals": [ "frew" ],
-       "err": "DBD::Pg::st execute failed: ERROR:  duplicate key value violates unique constraint \"amigos_name_key\""
+       "error": "DBD::Pg::st execute failed: ERROR:  duplicate key value violates unique constraint \"amigos_name_key\"",
+       "dbh":{
+          "state":"23505"
+       }
     },
     "invalid_table": {
-       "stmt": "INSERT INTO amigo (name) VALUES (?)",
-       "vals": [ "frew" ],
-       "err": "DBD::Pg::st execute failed: ERROR:  relation \"amigo\" does not exist",
-       "tokens": {
-          "table": "amigos"
+       "error": "DBD::Pg::st execute failed: ERROR:  relation \"amigo\" does not exist",
+       "dbh":{
+          "state":"42P01"
        }
     },
     "invalid_column": {
-       "stmt": "INSERT INTO amigos (names) VALUES (?)",
-       "vals": [ "frew" ],
-       "err": "DBD::Pg::st execute failed: ERROR:  column \"names\" of relation \"amigos\" does not exist",
-       "tokens": {
-          "column": "names",
-          "table": "amigos"
+       "error": "DBD::Pg::st execute failed: ERROR:  column \"names\" of relation \"amigos\" does not exist",
+       "dbh":{
+          "state":"42703"
        }
     },
     "null_column": {
-       "stmt": "INSERT INTO amigos (name) VALUES (?)",
-       "vals": [ null ],
-       "err": "DBD::Pg::st execute failed: ERROR:  null value in column \"name\" violates not-null constraint",
-       "tokens": {
-          "column": "name"
-       },
-       "class": "DBIx::Exception::NotNull"
+       "error": "DBD::Pg::st execute failed: ERROR:  null value in column \"name\" violates not-null constraint",
+       "dbh":{
+          "state":"useless"
+       }
     },
-    "syntax": [
-        {
-           "stmt": "INERT INTO amigos (name) VALUES (?)",
-           "vals": [ "frew" ],
-           "err": "DBD::Pg::st execute failed: ERROR:  syntax error at or near \"INERT\"",
-           "tokens": {
-              "near": "INERT"
+    "syntax": [{
+           "error": "DBD::Pg::st execute failed: ERROR:  syntax error at or near \"INERT\"",
+           "dbh":{
+              "state":"42601"
            }
         }, {
-           "stmt": "INSERT INO amigos (name) VALUES (?)",
-           "vals": [ "frew" ],
-           "err": "syntax error at or near \"INO\"",
-           "tokens": {
-              "near": "INO"
+           "error": "syntax error at or near \"INO\"",
+           "dbh":{
+              "state":"42601"
            }
         }, {
-           "stmt": "INSERT INTO amigos (name) VALUS (?)",
-           "vals": [ "frew" ],
-           "err": "syntax error at or near \"VALUS\"",
-           "tokens": {
-              "near": "VALUS"
+           "error": "syntax error at or near \"VALUS\"",
+           "dbh":{
+              "state":"42601"
            }
         }, {
-           "stmt": "INSERT INTO amigos (name) VALUES ((?)",
-           "vals": [ "frew" ],
-           "err": "syntax error at end of input"
+           "error": "syntax error at end of input",
+           "dbh":{
+              "state":"42601"
+           }
         }, {
-           "stmt": "INSERT INTO amigos (name) VALUES (,?)",
-           "vals": [ "frew" ],
-           "err": "syntax error at or near \",\"",
-           "tokens": {
-              "near": ","
-           },
-           "mock_dbh": {
+           "error": "syntax error at or near \",\"",
+           "dbh":{
+              "state":"42601"
            }
         }
     ],
     "statement_timeout": {
-       "err": "canceling statement due to statement timeout",
-       "class": "DBIx::Exception::QueryCanceled",
-       "mock_dbh": {
+       "error": "canceling statement due to statement timeout",
+       "dbh": {
           "state": "57014",
           "err": "7",
           "errstr": "DBD::Pg::st execute failed: ERROR:  canceling statement due to statement timeout [for Statement \"SELECT * FROM pg_class\"]"
        }
     },
     "deadlock": {
-       "err": "ERROR:  deadlock detected",
-       "class": "DBIx::Exception::Deadlock",
-       "mock_dbh": {
+       "error": "ERROR:  deadlock detected",
+       "dbh": {
           "state": "40P01",
           "err": "7",
           "errstr": "DBD::Pg::st execute failed: ERROR:  deadlock detected\nDETAIL:  Process 23541 waits for ShareLock on transaction 3321046029; blocked by process 23544."

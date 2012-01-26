@@ -579,10 +579,11 @@ my %error_codes = (
    },
 );
 
-sub error_handler {
-   my $string = shift;
+sub capabilities { $_[0] }
 
-   my $dbh = shift;
+sub parse {
+   my ($self, $string, $dbh) = @_;
+
    my $code = $dbh->state;
    my $error_info = $error_codes{$code};
 
@@ -618,7 +619,23 @@ sub error_handler {
       push @args, ( near => $near );
    }
 
-   $class->throw(@args);
+   $class->new(@args);
 }
+
+use constant {
+  can_unique_constraint        => 1,
+  can_unique_constraint_column => 0,
+
+  can_syntax                   => 1,
+  can_syntax_near              => 1,
+  can_syntax_near_end          => 0,
+
+  can_no_such_table            => 1,
+  can_no_such_table_table      => 1,
+
+  can_no_such_column           => 1,
+  can_no_such_column_table     => 1,
+  can_no_such_column_column    => 1,
+};
 
 1;

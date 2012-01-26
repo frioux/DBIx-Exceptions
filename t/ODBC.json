@@ -1,72 +1,49 @@
 {
-    "create_table": "IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='amigos') DROP TABLE amigos; CREATE TABLE amigos ( name VARCHAR(25) NOT NULL, email VARCHAR(25), UNIQUE(email), UNIQUE(name));",
     "non_unique": {
-       "stmt": "INSERT INTO amigos (name) VALUES (?)",
-       "vals": [ "frew" ],
-       "err": "Violation of UNIQUE KEY constraint"
+       "error": "Violation of UNIQUE KEY constraint",
+       "dbh":{
+          "state":"useless"
+       }
     },
     "invalid_table": {
-       "stmt": "INSERT INTO amigo (name) VALUES (?)",
-       "vals": [ "frew" ],
-       "err": "Invalid object name 'amigo'",
-       "tokens": {
-          "table": "amigos"
+       "error": "Invalid object name 'amigo'",
+       "dbh":{
+          "state":"42S02"
        }
     },
     "invalid_column": {
-       "stmt": "INSERT INTO amigos (names) VALUES (?)",
-       "vals": [ "frew" ],
-       "err": "Invalid column name 'names'",
-       "tokens": {
-          "column": "names",
-          "table": "amigos"
+       "error": "Invalid column name 'names'",
+       "dbh":{
+          "state":"42S22"
        }
     },
     "null_column": {
-       "stmt": "INSERT INTO amigos (name) VALUES (?)",
-       "vals": [ null ],
-       "err": "Cannot insert the value NULL into column 'name'",
-       "tokens": {
-          "column": "name"
-       },
-       "class": "DBIx::Exception::NotNull"
+       "error": "Cannot insert the value NULL into column 'name'"
     },
-    "syntax": [
-        {
-           "stmt": "INERT INTO amigos (name) VALUES (?)",
-           "vals": [ "frew" ],
-           "err": "Incorrect syntax near the keyword 'INTO'",
-           "tokens": {
-              "near": "INERT"
-           }
-        }, {
-           "stmt": "INSERT INO amigos (name) VALUES (?)",
-           "vals": [ "frew" ],
-           "err": "Incorrect syntax near 'amigos'",
-           "tokens": {
-              "near": "INO"
-           }
-        }, {
-           "stmt": "INSERT INTO amigos (name) VALUS (?)",
-           "vals": [ "frew" ],
-           "err": "Incorrect syntax near 'VALUS'",
-           "tokens": {
-              "near": "VALUS"
-           }
-        }, {
-           "stmt": "INSERT INTO amigos (name) VALUES ((?)",
-           "vals": [ "frew" ],
-           "err": "Incorrect syntax near '\\)'"
-        }, {
-           "stmt": "INSERT INTO amigos (name) VALUES (,?)",
-           "vals": [ "frew" ],
-           "err": "Incorrect syntax near ','",
-           "tokens": {
-              "near": ","
-           },
-           "mock_dbh": {
-           }
+    "syntax": [{
+        "error": "Incorrect syntax near the keyword 'INTO'",
+        "dbh":{
+           "state":"42000"
         }
-    ]
-	
+     }, {
+        "error": "Incorrect syntax near 'amigos'",
+        "dbh":{
+           "state":"42000"
+        }
+     }, {
+        "error": "Incorrect syntax near 'VALUS'",
+        "dbh":{
+           "state":"42000"
+        }
+     }, {
+        "error": "Incorrect syntax near '\\)'",
+        "dbh":{
+           "state":"42000"
+        }
+     }, {
+        "error": "Incorrect syntax near ','",
+        "dbh":{
+           "state":"42000"
+        }
+     }]
 }

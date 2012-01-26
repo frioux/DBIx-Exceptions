@@ -2,54 +2,103 @@ package DBIx::Exceptions;
 
 # ABSTRACT: Get full exception objects from DBI
 
-use Exception::Class (
-   'DBIx::Exception' => {
-      fields => [ 'original' ],
-   },
-   'DBIx::Exception::ConstraintViolation' => {
-      isa => 'DBIx::Exception',
-      fields => [ 'column', 'constraint' ],
-   },
-   'DBIx::Exception::NotUnique' => {
-      isa => 'DBIx::Exception::ConstraintViolation',
-   },
-   'DBIx::Exception::NotNull' => {
-      isa => 'DBIx::Exception::ConstraintViolation',
-   },
-   'DBIx::Exception::ForeignKey' => {
-      isa => 'DBIx::Exception::ConstraintViolation',
-   },
+package DBIx::Exception;
 
-   'DBIx::Exception::Timeout' => {
-      isa => 'DBIx::Exception',
-      fields => [],
-   },
-   'DBIx::Exception::QueryCanceled' => {
-      isa => 'DBIx::Exception::Timeout'
-   },
+use Moo;
 
-   'DBIx::Exception::NotUnique' => {
-      isa => 'DBIx::Exception::ConstraintViolation',
-   },
+has original => ( is => 'ro' );
 
-   'DBIx::Exception::Deadlock' => {
-      isa => 'DBIx::Exception',
-      fields => [],
-   },
+1;
 
-   'DBIx::Exception::Syntax' => {
-      isa => 'DBIx::Exception',
-      fields => [ 'near' ],
-   },
-   'DBIx::Exception::NoSuchTable' => {
-      isa => 'DBIx::Exception',
-      fields => [ 'table' ],
-   },
-   'DBIx::Exception::NoSuchColumn' => {
-      isa => 'DBIx::Exception',
-      fields => [ qw{column table} ],
-   },
-);
+package DBIx::Exception::ConstraintViolation;
+
+use Moo;
+
+extends 'DBIx::Exception';
+
+has column => ( is => 'ro' );
+has constraint => ( is => 'ro' );
+
+1;
+
+package DBIx::Exception::NotUnique;
+
+use Moo;
+
+extends 'DBIx::Exception::ConstraintViolation';
+
+1;
+
+package DBIx::Exception::NotNull;
+
+use Moo;
+
+extends 'DBIx::Exception::ConstraintViolation';
+
+1;
+
+package DBIx::Exception::ForeignKey;
+
+use Moo;
+
+extends 'DBIx::Exception::ConstraintViolation';
+
+1;
+
+package DBIx::Exception::Timeout;
+
+use Moo;
+
+extends 'DBIx::Exception';
+
+1;
+
+package DBIx::Exception::QueryCanceled;
+
+use Moo;
+
+extends 'DBIx::Exception';
+
+1;
+
+package DBIx::Exception::Deadlock;
+
+use Moo;
+
+extends 'DBIx::Exception';
+
+1;
+
+package DBIx::Exception::Syntax;
+
+use Moo;
+
+extends 'DBIx::Exception';
+
+has near => ( is => 'ro' );
+
+1;
+
+package DBIx::Exception::NoSuchTable;
+
+use Moo;
+
+extends 'DBIx::Exception';
+
+has table => ( is => 'ro' );
+
+1;
+
+package DBIx::Exception::NoSuchColumn;
+
+use Moo;
+
+extends 'DBIx::Exception';
+
+has table => ( is => 'ro' );
+has column => ( is => 'ro' );
+
+1;
 
 1;
 

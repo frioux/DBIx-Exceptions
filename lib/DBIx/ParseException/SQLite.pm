@@ -1,11 +1,12 @@
 package DBIx::ParseException::SQLite;
 
+use Moo;
 use DBIx::Exceptions;
 
 sub capabilities { $_[0] }
 
-sub error_handler {
-   my $string = shift;
+sub parse {
+   my ($self, $string) = @_;
    my @args   = ( original => $string );
    my $class  = 'DBIx::Exception';
 
@@ -27,7 +28,7 @@ sub error_handler {
       push @args, ( table => $1, column => $2 );
    }
 
-   $class->throw(@args);
+   return $class->new(@args);
 }
 
 use constant {
@@ -36,6 +37,7 @@ use constant {
 
   can_syntax                   => 1,
   can_syntax_near              => 1,
+  can_syntax_near_end          => 0,
 
   can_no_such_table            => 1,
   can_no_such_table_table      => 1,

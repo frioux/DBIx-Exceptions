@@ -856,10 +856,9 @@ my %error_codes = (
 
 sub capabilities { $_[0] }
 
-sub error_handler {
-   my $string = shift;
+sub parse {
+   my ($self, $string, $dbh) = @_;
 
-   my $dbh = shift;
    my $code = $dbh->state;
 
    #the old code is what we really want
@@ -891,7 +890,7 @@ sub error_handler {
    } elsif ($group eq 'no_such') {
       # wrong table, wrong column etc
       my ($table_name)  = $string =~ /Invalid object name '(.+)'/;
-      my ($column_name) = $string =~ /Invalid column name '(.+)'\./;
+      my ($column_name) = $string =~ /Invalid column name '(.+)'/;
       push @args, ( table  => $table_name  ) if $table_name;
       push @args, ( column => $column_name ) if $column_name;
    } elsif ($group eq 'syntax') {
@@ -899,7 +898,7 @@ sub error_handler {
       push @args, ( near => $near );
    }
 
-   $class->throw(@args);
+   $class->new(@args);
 }
 
 use constant {
@@ -908,6 +907,7 @@ use constant {
 
   can_syntax                   => 1,
   can_syntax_near              => 0,
+  can_syntax_near_end          => 0,
 
   can_no_such_table            => 1,
   can_no_such_table_table      => 1,

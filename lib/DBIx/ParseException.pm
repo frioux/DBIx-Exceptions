@@ -2,49 +2,19 @@ package DBIx::ParseException;
 
 use strict;
 use warnings;
-use DBI;
+
+use Module::Load;
 use Carp 'croak';
 
-sub _get_driver {
-  return do {
-      if (my $dbh = $_[1]->{dbh}) {
-      $dbh->{Driver}{Name};
-    } else {
-      ( DBI->parse_dsn($_[1]->{dsn}) )[1];
-    }
-  }
-}
+sub new {
+   my ($class, $params) = @_;
 
-DRIVERS: {
-   my %DRIVERS;
+   my $database = $params->{database}
+      or croak 'database is a required parameter to make an exception parser!';
 
-   sub handler {
-      my $self = shift;
-      my $params = shift or croak 'params are required for DBIx::ParseException!';
-      my $driver = $self->_get_driver($params);
-      return $DRIVERS{$driver} ||= do {
-         my $parser = __PACKAGE__ . "::$driver";
-         eval "require $parser";
-         die $@ if $@;
-         $parser->can('error_handler');
-      };
-   }
-}
-
-CAPABILITIES: {
-   my %CAPABILITIES;
-
-   sub capabilities {
-      my $self = shift;
-      my $params = shift or croak 'params are required for DBIx::ParseException!';
-      my $driver = $self->_get_driver($params);
-      return $CAPABILITIES{$driver} ||= do {
-         my $parser = __PACKAGE__ . "::$driver";
-         eval "require $parser";
-         die $@ if $@;
-         $parser->can('capabilities')->($parser);
-      };
-   }
+   my $next = "DBIx::ParseException::$database";
+   load($next);
+   $next->new($params);
 }
 
 1;
