@@ -3,6 +3,8 @@ package DBIx::ParseException::Pg;
 use Moo;
 use DBIx::Exceptions;
 
+with 'DBIx::ParseException::Role::Capabilities';
+
 my %error_codes = (
    '00000' => {
       id => 'successful_completion',
@@ -579,8 +581,6 @@ my %error_codes = (
    },
 );
 
-sub capabilities { $_[0] }
-
 sub parse {
    my ($self, $string, $dbh) = @_;
 
@@ -624,11 +624,6 @@ sub parse {
 
 use constant {
   can_unique_constraint        => 1,
-  can_unique_constraint_column => 0,
-
-  can_syntax                   => 1,
-  can_syntax_near              => 1,
-  can_syntax_near_end          => 0,
 
   can_no_such_table            => 1,
   can_no_such_table_table      => 1,
