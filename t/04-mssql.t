@@ -6,5 +6,5 @@ use warnings;
 use lib 't/lib';
 use DBIETester;
 
-DBIETester->new( database => 'ODBC' )->run_tests;
+DBIETester->new( database => 'MSSQL' )->run_tests;
 

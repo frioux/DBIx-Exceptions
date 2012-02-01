@@ -1,4 +1,4 @@
-package DBIx::ParseException::ODBC;
+package DBIx::ParseException::MSSQL;
 
 use Moo;
 use DBIx::Exceptions;
