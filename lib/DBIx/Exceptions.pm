@@ -6,7 +6,23 @@ package DBIx::Exception;
 
 use Moo;
 
-has original => ( is => 'ro' );
+has $_ => ( is => 'ro' ) for qw(
+   original
+   lasth
+   lasth_type
+   lasth_statement
+   type
+   param_values
+   param_arrays
+   name
+   username
+   statement
+   kids
+   active_kids
+   error_string
+   callbacks
+   substatements
+);
 
 1;
 

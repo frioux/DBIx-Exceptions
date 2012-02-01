@@ -3,11 +3,12 @@ package DBIx::ParseException::SQLite;
 use Moo;
 use DBIx::Exceptions;
 
-with 'DBIx::ParseException::Role::Capabilities';
+with $_ for 'DBIx::ParseException::Role::Capabilities',
+     'DBIx::ParseException::Role::ExtractFromDBH';
 
 sub parse {
-   my ($self, $string) = @_;
-   my @args   = ( original => $string );
+   my ($self, $string, $dbh) = @_;
+   my @args   = ( original => $string, %{$self->extract_from_dbh($dbh)} );
    my $class  = 'DBIx::Exception';
 
    if (my ($column) = $string =~ /^DBD::SQLite::st \s+ execute \s+ failed: \s+ (?:constraint \s+ failed \s+)?
