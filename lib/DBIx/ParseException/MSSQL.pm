@@ -2,6 +2,7 @@ package DBIx::ParseException::MSSQL;
 
 use Moo;
 use DBIx::Exceptions;
+use Carp 'croak';
 
 with 'DBIx::ParseException::Role::Capabilities';
 
@@ -860,6 +861,9 @@ sub capabilities { $_[0] }
 
 sub parse {
    my ($self, $string, $dbh) = @_;
+
+   croak 'You built your parser wrong, use DBIx::ParseException!'
+      unless $self->does('DBIx::ParseException::Role::API');
 
    my $code = $dbh->state;
 

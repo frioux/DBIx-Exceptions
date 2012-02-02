@@ -2,6 +2,7 @@ package DBIx::ParseException::Pg;
 
 use Moo;
 use DBIx::Exceptions;
+use Carp 'croak';
 
 with 'DBIx::ParseException::Role::Capabilities';
 
@@ -583,6 +584,9 @@ my %error_codes = (
 
 sub parse {
    my ($self, $string, $dbh) = @_;
+
+   croak 'You built your parser wrong, use DBIx::ParseException!'
+      unless $self->does('DBIx::ParseException::Role::API');
 
    my $code = $dbh->state;
    my $error_info = $error_codes{$code};

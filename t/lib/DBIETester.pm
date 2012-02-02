@@ -18,7 +18,7 @@ has capabilities => ( is => 'lazy');
 sub _build_capabilities{ shift->parser->capabilities }
 
 has parser => ( is => 'lazy' );
-sub _build_parser { DBIx::ParseException->new({ database => shift->database }) }
+sub _build_parser { DBIx::ParseException->new({ api => 0, database => shift->database }) }
 
 has test_data => ( is => 'lazy');
 sub _build_test_data {

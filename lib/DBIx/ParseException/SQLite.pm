@@ -2,12 +2,17 @@ package DBIx::ParseException::SQLite;
 
 use Moo;
 use DBIx::Exceptions;
+use Carp 'croak';
 
 with $_ for 'DBIx::ParseException::Role::Capabilities',
      'DBIx::ParseException::Role::ExtractFromDBH';
 
 sub parse {
    my ($self, $string, $dbh) = @_;
+
+   croak 'You built your parser wrong, use DBIx::ParseException!'
+      unless $self->does('DBIx::ParseException::Role::API');
+
    my @args   = ( original => $string, %{$self->extract_from_dbh($dbh)} );
    my $class  = 'DBIx::Exception';
 
