@@ -4,7 +4,8 @@ use Moo;
 use DBIx::Exceptions;
 use Carp 'croak';
 
-with 'DBIx::ParseException::Role::Capabilities';
+with $_ for 'DBIx::ParseException::Role::Capabilities',
+     'DBIx::ParseException::Role::ExtractFromDBH';
 
 my %error_codes = (
    '00000' => {
@@ -865,6 +866,8 @@ sub parse {
    croak 'You built your parser wrong, use DBIx::ParseException!'
       unless $self->does('DBIx::ParseException::Role::API');
 
+   # prepare args
+   my @args = ( original => $string, %{$self->extract_from_dbh($dbh)} );
    my $code = $dbh->state;
 
    #the old code is what we really want
@@ -885,8 +888,6 @@ sub parse {
      $group = $error_info->{group};
    }
 
-   # prepare args
-   my @args = ( original => $string );
    if ($group eq 'constraint') {
       # fk constraints, unique constraints etc
       my ($constraint) = $string =~ /Violation of UNIQUE KEY constraint '.+'/;
