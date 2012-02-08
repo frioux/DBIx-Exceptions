@@ -7,11 +7,8 @@ sub extract_from_dbh {
    my ($self, $dbh) = @_;
 
    my %out;
-   if ($DBI::lasth) {
-      $out{lasth}           = $DBI::lasth;
-      $out{lasth_type}      = $DBI::lasth->{Type};
-      $out{lasth_statement} = $DBI::lasth->{Statement};
-   }
+
+   $out{lasth} = $DBI::lasth if $DBI::lasth;
 
    my $type = $dbh->{Type} || '';
    if ($type eq 'st') {
