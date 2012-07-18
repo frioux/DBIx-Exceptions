@@ -890,7 +890,7 @@ sub parse {
 
    if ($group eq 'constraint') {
       # fk constraints, unique constraints etc
-      my ($constraint) = $string =~ /Violation of UNIQUE KEY constraint '.+'/;
+      my ($constraint) = $string =~ /Violation of UNIQUE KEY constraint '([^']+)'/;
       push @args, ( constraint => $constraint );
       my ($column_name) = $string =~ /column '(.+)', table/;
       push @args, ( column => $column_name ) if $column_name;
