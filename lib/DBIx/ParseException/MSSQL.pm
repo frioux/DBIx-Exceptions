@@ -880,7 +880,7 @@ sub parse {
    # prepare class
    my $class = 'DBIx::Exception';
    my $group = '';
-   if ($string =~ m/Violation of UNIQUE KEY constraint/){
+   if ($string =~ m/Violation of UNIQUE KEY constraint|Cannot insert duplicate key/){
       $class .= '::NotUnique';
       $group = 'constraint';
    } elsif (my $class_ext = $error_info->{class}) {
@@ -890,7 +890,7 @@ sub parse {
 
    if ($group eq 'constraint') {
       # fk constraints, unique constraints etc
-      my ($constraint) = $string =~ /Violation of UNIQUE KEY constraint '([^']+)'/;
+      my ($constraint) = grep $_, $string =~ /Violation of UNIQUE KEY constraint '([^']+)'|with unique index '([^']+)'/;
       push @args, ( constraint => $constraint );
       my ($column_name) = $string =~ /column '(.+)', table/;
       push @args, ( column => $column_name ) if $column_name;
